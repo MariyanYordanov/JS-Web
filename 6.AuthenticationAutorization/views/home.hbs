@@ -1,4 +1,9 @@
 <h1>Authentication Demo</h1>
+{{#if user}}
+<h2>Welcome, {{user}}!</h2>
+{{else}}
+<h2>Welcome, Guest!</h2>
 <div>
-    <a href="/login">Login</a>
+    <a href="/login">Log in</a>
 </div>
+{{/if}}

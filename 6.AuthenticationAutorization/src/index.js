@@ -22,7 +22,9 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    res.render('home');
+    const user = req.session.user;
+   console.log(user); 
+    res.render('home', { user });
 });
 
 app.get('/login', (req, res) => {
