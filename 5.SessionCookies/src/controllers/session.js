@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { parserCookies } = require('../util');
 
 const sessionRouter = Router();
 
@@ -12,6 +13,10 @@ sessionRouter.get('/set-session', (req, res) => {
 });
 
 sessionRouter.get('/get-session', (req, res) => {
+    const cookieData = req.headers["cookie"];
+    const cookies = parserCookies(cookieData);
+    const sessionId = cookies.sessionId;
+    console.log(sessionId);
     res.render('session', { title: 'Session Page' });
 });
 
