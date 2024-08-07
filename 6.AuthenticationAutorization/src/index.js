@@ -28,14 +28,18 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login');
+    const error = req.session.error;
+    delete req.session.error;
+
+    res.render('login', { error });
 });
 
 app.post('/login', (req, res) => {
     console.log(req.body);
     const { username, password } = req.body;
     if(username != 'pepi' || password != '1234'){
-        res.status(401).send('Invalid username or password');
+        req.session.error = 'Invalid username or password';
+        res.redirect('/login');
         return;
     } 
 
@@ -43,10 +47,11 @@ app.post('/login', (req, res) => {
     res.redirect('/');
 });
 
-app.get('profile', (req, res) => {
-    res.render('profile');
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
 });
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
-    });
+});
