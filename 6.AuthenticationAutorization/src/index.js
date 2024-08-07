@@ -30,13 +30,15 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    console.log(req.body);
     const { username, password } = req.body;
-    if (username === 'admin' && password === 'admin') {
-        req.session.user = username;
-        res.redirect('/profile');
-    } else {
-        res.render('/login', { message: 'Invalid username or password' });
-    }
+    if(username != 'pepi' || password != '1234'){
+        res.status(401).send('Invalid username or password');
+        return;
+    } 
+
+    req.session.user = 'pepi';
+    res.redirect('/');
 });
 
 app.get('profile', (req, res) => {
