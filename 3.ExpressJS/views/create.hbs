@@ -1,0 +1,16 @@
+<h2>Add new product</h2>
+<form method="post">
+    {{#if error}}
+        <div class="error">All fields are required</div>
+    {{/if}}
+    <label {{#if error.name}}class="error"{{/if}} for="name">Name</label>
+    <input type="text" id="name" name="name" value="{{name}}">
+
+    <label {{#if error.description}}class="error"{{/if}} for="description">Description</label>
+    <input id="description" name="description" value="{{description}}">
+
+    <label {{#if error.price}}class="error"{{/if}} for="price">Price</label>
+    <input type="number" id="price" name="price" step="0.01" value="{{price}}">
+
+    <button>Create product</button>
+</form>
