@@ -26,7 +26,7 @@ app.use(expressSession({
     secret,
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: true }
+    cookie: { secure: false }
 }));
 
 app.listen(port, () => {

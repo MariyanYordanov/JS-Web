@@ -20,7 +20,6 @@ router.get("/set", (req, res) => {
 router.get("/get", (req, res) => {
     const cookie = req.headers["cookie"];
     console.log(cookie);
-    console.log(req.session.message); // ?????
     res.render("get", { title: "Get" });
 });
 
