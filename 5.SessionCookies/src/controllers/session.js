@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { parserCookies } = require('../util');
+const e = require('express');
 
 const sessionRouter = Router();
 
@@ -7,7 +8,7 @@ const sesions = {};
 
 sessionRouter.get('/set-session', (req, res) => {
     const id = getId();
-    sesions[id] = {};
+    sesions[id] = { visits: 0 };
     res.setHeader('Set-Cookie', `sessionId=${id}; HttpOnly; Secure`);
     res.redirect('/get-session');
 });
@@ -16,8 +17,16 @@ sessionRouter.get('/get-session', (req, res) => {
     const cookieData = req.headers["cookie"];
     const cookies = parserCookies(cookieData);
     const sessionId = cookies.sessionId;
-    console.log(sessionId);
-    res.render('session', { title: 'Session Page' });
+    const session = sesions[sessionId];
+
+    if(session){
+        session.visits = session.visits + 1;
+        console.log(session);
+    } else{
+        console.log('Anonimous user');
+    }
+
+    res.render('session', { visits: session?.visits || 0, title: 'Session Page' });
 });
 
 function getId(){
