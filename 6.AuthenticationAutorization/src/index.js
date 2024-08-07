@@ -1,6 +1,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const session = require("express-session");
+const { loginUser } = require("./auth");
 
 const app = express();
 const port = 3000;
@@ -38,13 +39,18 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
     console.log(req.body);
     const { username, password } = req.body;
-    if (username != "pepi" || password != "1234") {
-        req.session.error = "Invalid username or password";
+    try{
+        const user = loginUser(username, password);
+        req.session.user = user;
+        res.redirect("/");
+    } catch (err) {
+        req.session.error = {
+            type: "login",
+            message: err.message
+        };
         res.redirect("/login");
         return;
-    }
-    req.session.user = "pepi";
-    res.redirect("/");
+    } 
 });
 
 app.get("/logout", (req, res) => {
