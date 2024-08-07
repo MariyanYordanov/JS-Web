@@ -1,5 +1,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
+const { router } = require("./controllers/home");
+const { sessionRouter } = require("./controllers/session");
 
 const app = express();
 const port = 3000;
@@ -14,39 +16,8 @@ const hbs = handlebars.create({
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
-app.get("/", (req, res) => {
-    const cookieData = req.headers["cookie"];
-    const cookies = Object.fromEntries(
-        cookieData
-            .split(";")
-            .map(kvp => kvp.trim())
-            .filter(kvp => kvp)
-            .map(kvp => kvp.split("="))
-    );
-    const theme = cookies.theme == "dark";
-    res.render('home', { theme, title: "Home" });
-});
-
-app.get("/set", (req, res) => {
-    res.setHeader("Set-Cookie", "cookieDemo=Hello; HttpOnly; Secure");
-    res.redirect("/");
-});
-
-app.get("/get", (req, res) => {
-    const cookie = req.headers["cookie"];
-    console.log(cookie);
-    res.render('get', { title: "Get" });
-});
-
-app.get("/use-light", (req, res) => {
-    res.setHeader("Set-Cookie", "theme=light;");
-    res.redirect("/");
-});
-
-app.get("/use-dark", (req, res) => {
-    res.setHeader("Set-Cookie", "theme=dark; HttpOnly");
-    res.redirect("/");
-});
+app.use(router);
+app.use(sessionRouter);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
