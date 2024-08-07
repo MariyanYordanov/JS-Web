@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/set", (req, res) => {
-    res.setHeader("Set-Cookie", "cookieDemo=Hello; HttpOnly");
+    res.setHeader("Set-Cookie", "cookieDemo=Hello; HttpOnly; Secure");
     res.redirect("/");
 });
 
