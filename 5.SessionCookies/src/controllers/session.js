@@ -26,7 +26,8 @@ sessionRouter.get('/get-session', (req, res) => {
         console.log('Anonimous user');
     }
 
-    res.render('session', { visits: session?.visits || 0, title: 'Session Page'});
+    req.session.message = 'Hello, session!';
+    res.render('session', { visits: session?.visits || 0, title: 'Session Page', message: req.session.message });
 });
 
 function getId(){

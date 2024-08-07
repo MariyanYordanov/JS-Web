@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
     const cookieData = req.headers['cookie'];
     const cookies = parserCookies(cookieData);
     const useTheme = cookies.theme == 'dark';
-
+    req.session.message = 'Hello, session!';
     res.render('home', { useTheme, title: 'Home'});
 });
 
@@ -20,6 +20,7 @@ router.get("/set", (req, res) => {
 router.get("/get", (req, res) => {
     const cookie = req.headers["cookie"];
     console.log(cookie);
+    console.log(req.session.message);
     res.render("get", { title: "Get" });
 });
 

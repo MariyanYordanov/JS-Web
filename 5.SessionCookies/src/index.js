@@ -19,15 +19,16 @@ const hbs = handlebars.create({
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
-app.use(router);
-app.use(sessionRouter);
 app.use(cookieParser(secret));
 app.use(expressSession({
     secret,
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     cookie: { secure: false }
 }));
+
+app.use(router);
+app.use(sessionRouter);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
