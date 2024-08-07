@@ -8,7 +8,7 @@ sessionRouter.get('/set-session', (req, res) => {
     const id = getId();
     sesions[id] = {};
     res.setHeader('Set-Cookie', `sessionId=${id}; HttpOnly; Secure`);
-    res.redirect('/get-session', { title: 'Set Session' });
+    res.redirect('/get-session');
 });
 
 sessionRouter.get('/get-session', (req, res) => {
