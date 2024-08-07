@@ -1,13 +1,15 @@
 const { Router } = require("express");
 const { parserCookies } = require("../util");
 
-const router = new Router();
+const router = Router();
 
 router.get("/", (req, res) => {
-    const cookieData = req.headers["cookie"];
+
+    const cookieData = req.headers['cookie'];
     const cookies = parserCookies(cookieData);
-    const theme = cookies.theme == "dark";
-    res.render('home', { theme, title: "Home" });
+    const useTheme = cookies.theme == 'dark';
+
+    res.render('home', { useTheme, title: 'Home'});
 });
 
 router.get("/set", (req, res) => {
@@ -18,6 +20,7 @@ router.get("/set", (req, res) => {
 router.get("/get", (req, res) => {
     const cookie = req.headers["cookie"];
     console.log(cookie);
+    console.log(req.session.message); // ?????
     res.render("get", { title: "Get" });
 });
 

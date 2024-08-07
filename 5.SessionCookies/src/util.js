@@ -1,4 +1,8 @@
 function parserCookies(cookieData){
+    if(!cookieData){
+        return {};
+    }
+    
     const cookies = Object.fromEntries(
         cookieData
             .split(";")
