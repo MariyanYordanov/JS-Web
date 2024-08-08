@@ -1,11 +1,12 @@
 <h1>Authentication Demo</h1>
 {{#if user}}
-<h2>Welcome, {{user}}!</h2>
+<h2>Welcome, {{user.username}}!</h2>
 <div>
     <a href="/logout">Log out</a>
 {{else}}
 <h2>Welcome, Guest!</h2>
 <div>
     <a href="/login">Log in</a>
+    <a href="/register">Register</a>
 </div>
 {{/if}}

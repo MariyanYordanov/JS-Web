@@ -1,12 +1,14 @@
-<h1>Login Page</h1>
+<h1>Register Page</h1>
 <div>
     <form method="POST">
         {{#if error}}<p style="color:red">{{error.message}}</p>{{/if}}
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" 
-        {{#if formData}}value="{{formData.username}}"{{/if}} required>
+        {{#if formData}}value="{{formData.username}}"{{/if}}required>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
-        <button type="submit">Login</button>
+        <label for="password">Repeat Password:</label>
+        <input type="password" id="repass" name="repass" required>
+        <button type="submit">Register</button>
     </form>
 </div>
