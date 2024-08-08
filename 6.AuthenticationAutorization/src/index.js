@@ -1,96 +1,106 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const session = require("express-session");
+const mongoose = require("mongoose");
+
+require("./User");
+
 const { loginUser, registerUser } = require("./auth");
 
-const app = express();
-const port = 3000;
-const secret = "mysecret";
+start();
 
-const hbs = handlebars.create({
-    extname: "hbs",
-});
+async function start() {
+    await mongoose.connect("mongodb://localhost:27017/auth");
 
-app.engine("hbs", hbs.engine);
-app.set("view engine", "hbs");
+    const app = express();
+    const port = 3000;
+    const secret = "mysecret";
 
-app.use(express.urlencoded({ extended: true }));
-app.use(
-    session({
-        secret,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false },
-    })
-);
+    const hbs = handlebars.create({
+        extname: "hbs",
+    });
 
-app.get("/", (req, res) => {
-    const user = req.session.user;
-    console.log(user);
-    res.render("home", { user });
-});
+    app.engine("hbs", hbs.engine);
+    app.set("view engine", "hbs");
 
-app.get("/login", (req, res) => {
-    const error = req.session.error;
-    const formData = req.session.formData;
+    app.use(express.urlencoded({ extended: true }));
+    app.use(
+        session({
+            secret,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { secure: false },
+        })
+    );
 
-    delete req.session.error;
-    delete req.session.formData;
+    app.get("/", (req, res) => {
+        const user = req.session.user;
+        console.log(user);
+        res.render("home", { user });
+    });
 
-    res.render("login", { error, formData });
-});
+    app.get("/login", (req, res) => {
+        const error = req.session.error;
+        const formData = req.session.formData;
 
-app.post("/login", async (req, res) => {
-    console.log(req.body);
+        delete req.session.error;
+        delete req.session.formData;
 
-    const { username, password } = req.body;
+        res.render("login", { error, formData });
+    });
 
-    try {
-        const user = await loginUser(username, password);
-        req.session.user = user;
+    app.post("/login", async (req, res) => {
+        console.log(req.body);
+
+        const { username, password } = req.body;
+
+        try {
+            const user = await loginUser(username, password);
+            req.session.user = user;
+            res.redirect("/");
+        } catch (err) {
+            req.session.error = {
+                type: "login",
+                message: err.message,
+                formData: { username },
+            };
+            res.redirect("/login");
+            return;
+        }
+    });
+
+    app.get("/logout", (req, res) => {
+        req.session.destroy();
         res.redirect("/");
-    } catch (err) {
-        req.session.error = {
-            type: "login",
-            message: err.message,
-            formData: { username },
-        };
-        res.redirect("/login");
-        return;
-    }
-});
+    });
 
-app.get("/logout", (req, res) => {
-    req.session.destroy();
-    res.redirect("/");
-});
+    app.get("/register", (req, res) => {
+        const error = req.session.error;
+        const formData = req.session.formData;
+        delete req.session.error;
+        delete req.session.formData;
+        res.render("register", { error, formData });
+    });
 
-app.get("/register", (req, res) => {
-    const error = req.session.error;
-    const formData = req.session.formData;
-    delete req.session.error;
-    delete req.session.formData;
-    res.render("register", { error, formData });
-});
+    app.post("/register", async (req, res) => {
+        const { username, password, repass } = req.body;
+        try {
+            const user = await registerUser(username, password, repass);
+            req.session.user = user;
+            res.redirect("/login");
+        } catch (err) {
+            req.session.error = {
+                type: "register",
+                message: err.message,
+                formData: { username },
+            };
+            req.session.formData = { username };
+            res.redirect("/register");
+            return;
+        }
+    });
 
-app.post("/register",async (req, res) => {
-    const { username, password, repass } = req.body;
-    try {
-        const user = await registerUser(username, password, repass);
-        req.session.user = user;
-        res.redirect("/login");
-    } catch (err) {
-        req.session.error = {
-            type: "register",
-            message: err.message,
-            formData: { username },
-        };
-        req.session.formData = { username };
-        res.redirect("/register");
-        return;
-    }
-});
-
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});
+    app.listen(port, () => {
+        console.log(`Example app listening at http://localhost:${port}`);
+    });
+}
