@@ -1,61 +1,79 @@
-const bcs = require('bcryptjs');
+const bcs = require("bcryptjs");
+const { User } = require("./User");
 
 const users = {
-    'peper': {
-        username: 'peper',
-        password: '12345',
+    peper: {
+        username: "peper",
+        password: "12345",
     },
 };
 
-registerUser('peter', '12345', '12345');
+async function seed() {
+    try {
+        await registerUser("peter", "12345", "12345");
+    } catch (err) {
+        console.log("Database already seeded");
+    }
+}
 
 async function registerUser(username, password, repass) {
-    
-    if(!username){
+    if (!username) {
         throw new Error("Username is required");
     }
-    if(!password){
+    if (!password) {
         throw new Error("Password is required");
     }
-    if(password !== repass) {
+    if (password !== repass) {
         throw new Error("Passwords do not match");
     }
-    if (users[username]) {
+
+    const existing = await User.findOne({ username });
+
+    if (existing) {
         throw new Error("User already exists");
     }
-    if(username.length < 4) {
+    if (username.length < 4) {
         throw new Error("Username must be at least 4 characters long");
     }
-    if(password.length < 4) {
+    if (username.length > 20) {
+        throw new Error("Username must be at most 20 characters long");
+    }
+    if (password.length < 4) {
         throw new Error("Password must be at least 4 characters long");
     }
-    if(password.length > 20) {
+    if (password.length > 20) {
         throw new Error("Password must be at most 20 characters long");
     }
 
-    const user = { 
+    const user = new User({
         username,
-        hachedPassword: await bcs.hash(password, 10), 
-    };
+        hachedPassword: await bcs.hash(password, 8),
+    });
 
-    users[username] = user;
-    console.log("Create new user",username, password);
+    await user.save();
+    console.log("Create new user", username);
 
     return user;
-};
+}
 
 async function loginUser(username, password) {
-    if(!username){
+    
+    if (!username) {
         throw new Error("Username is required");
     }
-    if(!password){
+    if (!password) {
         throw new Error("Password is required");
     }
-    const user = users[username];
+
+    const user = await User.findOne({ username });
+
     if (!user || !(await bcs.compare(password, user.hachedPassword))) {
         throw new Error("Incorrect username or paswword");
     }
+
+    console.log("User logged in", username);
+
     return user;
-};
+}
 
 module.exports = { registerUser, loginUser };
