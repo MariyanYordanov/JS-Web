@@ -1,3 +1,5 @@
+const bcs = require('bcryptjs');
+
 const users = {
     'peper': {
         username: 'peper',
@@ -5,7 +7,9 @@ const users = {
     },
 };
 
-function registerUser(username, password, repass) {
+registerUser('peter', '12345', '12345');
+
+async function registerUser(username, password, repass) {
     
     if(!username){
         throw new Error("Username is required");
@@ -29,14 +33,18 @@ function registerUser(username, password, repass) {
         throw new Error("Password must be at most 20 characters long");
     }
 
-    const user = { username, password };
+    const user = { 
+        username,
+        hachedPassword: await bcs.hash(password, 10), 
+    };
+
     users[username] = user;
-    console.log(username, password);
+    console.log("Create new user",username, password);
 
     return user;
 };
 
-function loginUser(username, password) {
+async function loginUser(username, password) {
     if(!username){
         throw new Error("Username is required");
     }
@@ -44,7 +52,7 @@ function loginUser(username, password) {
         throw new Error("Password is required");
     }
     const user = users[username];
-    if (!user || user.password !== password) {
+    if (!user || !(await bcs.compare(password, user.hachedPassword))) {
         throw new Error("Incorrect username or paswword");
     }
     return user;

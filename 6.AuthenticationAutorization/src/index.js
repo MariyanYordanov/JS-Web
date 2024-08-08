@@ -40,13 +40,13 @@ app.get("/login", (req, res) => {
     res.render("login", { error, formData });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     console.log(req.body);
 
     const { username, password } = req.body;
 
     try {
-        const user = loginUser(username, password);
+        const user = await loginUser(username, password);
         req.session.user = user;
         res.redirect("/");
     } catch (err) {
@@ -73,10 +73,10 @@ app.get("/register", (req, res) => {
     res.render("register", { error, formData });
 });
 
-app.post("/register", (req, res) => {
+app.post("/register",async (req, res) => {
     const { username, password, repass } = req.body;
     try {
-        const user = registerUser(username, password, repass);
+        const user = await registerUser(username, password, repass);
         req.session.user = user;
         res.redirect("/login");
     } catch (err) {
