@@ -16,7 +16,8 @@ router.post(
         .trim()
         .isEmail()
         .normalizeEmail()
-        .withMessage("Invalid email"),
+        .withMessage("Invalid email")
+        .bail(),
     body("password")
         .trim()
         .isLength({ min: 5 })
@@ -24,10 +25,7 @@ router.post(
     body('repass')
         .trim()
         .custom((value, { req }) => {
-            if (value !== req.body.password) {
-                throw new Error('Passwords do not match');
-            }
-            return true;
+            return req.body.password == value;
         }),
     (req, res) => {
         const result = validationResult(req);
