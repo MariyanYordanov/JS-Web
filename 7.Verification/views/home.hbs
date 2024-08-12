@@ -2,9 +2,9 @@
 <p>{{message}}</p>
 <div>
     <form method="post">
-        {{#if errors}}
-        <p class="error">{{errors.message}}</p>
-        {{/if}}
+        {{#each errors}}
+        <p class="error">{{this}}</p>
+        {{/each}}
         <h2>Register</h2>
         <input type="text" name="name" placeholder="Name" required>
         <input type="text" name="email" placeholder="Email" required>

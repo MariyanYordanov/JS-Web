@@ -17,9 +17,13 @@ router.post(
         .isLength({ min: 5 })
         .withMessage("Password must be at least 5 characters long"),
     (req, res) => {
-        const { errors } = validationResult(req);
+        const result = validationResult(req);
+        const errors = result.errors.map((error) => error.msg); 
+
+        console .log(errors);
+
         if (errors.length) {
-            res.render('home', { errors: { message: 'Invalid something'} });
+            res.render('home', { errors});
             return;
         }
         res.redirect('/');
