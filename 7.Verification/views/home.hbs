@@ -6,9 +6,21 @@
         <p class="error">{{this}}</p>
         {{/each}}
         <h2>Register</h2>
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="text" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="password" name="repeat" placeholder="Repeat password" required>
+
+        <input {{#if errors.name}}class="error" {{/if}}
+        type="text" name="name" placeholder="Name" 
+        {{#if data.name}}value="{{data.name}}"{{/if}} required>
+
+        <input {{#if errors.email}}class="error" {{/if}} 
+        type="text" name="email" placeholder="Email" 
+        {{#if data.email}}value="{{data.email}}"{{/if}} required>
+
+        <input {{#if errors.password}}class="error" {{/if}} 
+        type="password" name="password" placeholder="Password" required>
+
+        <input {{#if errors.repass}}class="error" {{/if}} 
+        type="password" name="repass" placeholder="Repeat password" required>
+
         <button type="submit" value="Register">Register</button>
+    </form>
 </div>
