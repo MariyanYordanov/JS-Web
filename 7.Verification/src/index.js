@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 
 hbsConfig(app);
+app.use(express.urlencoded({ extended: true }));
 app.use(router);
 
 app.listen(port, () => {
